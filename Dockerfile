@@ -1,7 +1,13 @@
-FROM golang:alpine3.19
+FROM golang:alpine AS builder
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY main.go .
 
-CMD ["go", "run", "main.go"]
+RUN go build -o /app main.go
+
+FROM scratch
+
+COPY --from=builder /app /app
+
+CMD ["/app"]
